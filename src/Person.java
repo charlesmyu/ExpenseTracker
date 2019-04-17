@@ -4,10 +4,9 @@ import java.text.DecimalFormat;
 
 public class Person {
 	private String name;
-	private double outstandingAmount;
-	private double owedAmount;
-	private double balance;
-		//balance is overall sum owed or outstanding. Positive is sum owed to person, negative is sum outstanding
+	private double outstandingAmount; //amt person owes
+	private double owedAmount; //amt person is owed
+	private double balance; //balance is overall sum owed or outstanding. Positive is sum outstanding to be paid, negative is sum owed to person
 	
 	public Person(String name, double outstanding, double paid) {
 		this.name = name;

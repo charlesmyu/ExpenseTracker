@@ -1,7 +1,9 @@
 # ExpenseTracker
+
 **This is still a work in progress
 
-Program which tracks shared expenses of a group of people (i.e. a group of friends travelling, or roommates over the period of a month). Program has functionality to then determine how to pay one another back to even out those costs. 
+Program which tracks shared expenses of a group of people (i.e. a group of friends travelling, or roommates over the period of a month). 
+Program has functionality to then determine how to pay one another back to even out those costs. 
 
 Expense lists are saved in text files when the program is not in operation, consisting of various "entries" that each represent an expense.
 			
@@ -27,7 +29,7 @@ Compile Notes:
 	If there is an individual who you wish to split costs with, but has not purchased anything, you must enter them in the expense 		list at least once with a purchase amount of $0. This is because the program will only divide expenses amongst those who have 		been entered into the list
 			
 Add:
-	In progress
+	Adds items to the current entries list.
 			
 Change:
 	In progress

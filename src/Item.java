@@ -19,20 +19,16 @@ public class Item {
 	private double amount;
 	private String purchaser;
 	
-	public static void printHeader(PrintStream output) {
-		output.println("Entry #\t\tDate Entered\t\tDate Purchased\t\tDescription\t\t\tAmount\t\t\tPurchaser");
-		//TODO fix print spacings
+	public Item(int entryNum, String date, String desc, double amt, String purchaser) {
+		this.entryNumber = entryNum;
+		this.datePurchased = LocalDate.parse(date);
+		this.dateEntered = LocalDate.now();
+		this.description = desc;
+		this.amount = amt;
+		this.purchaser = purchaser;
 	}
 	
-	public String toString() {
-		//format dollar amounts to always have 2 decimal places
-		DecimalFormat dollars = new DecimalFormat("#.00");
-		
-		//TODO fix print spacings
-		return (this.entryNumber + "\t\t\t" + this.dateEntered + "\t\t\t" + this.datePurchased + "\t\t\t" + this.description + "\t\t\t$" + dollars.format(this.amount) + "\t\t\t" + this.purchaser);
-	}
-	
-	public void fromString(String line) {
+	public Item(String line) {
 		Scanner lineScanner = new Scanner(line);
 		
 		this.entryNumber = lineScanner.nextInt();
@@ -44,6 +40,20 @@ public class Item {
 		this.purchaser = lineScanner.next();
 		
 		lineScanner.close();
+	}
+	
+	
+	public static void printHeader(PrintStream output) {
+		output.println("Entry #\t\tDate Entered\t\tDate Purchased\t\tDescription\t\t\tAmount\t\t\tPurchaser");
+		//TODO fix print spacings
+	}
+	
+	public String toString() {
+		//format dollar amounts to always have 2 decimal places
+		DecimalFormat dollars = new DecimalFormat("#.00");
+		
+		//TODO fix print spacings
+		return (this.entryNumber + "\t\t\t" + this.dateEntered + "\t\t\t" + this.datePurchased + "\t\t\t" + this.description + "\t\t\t$" + dollars.format(this.amount) + "\t\t\t" + this.purchaser);
 	}
 	
 	public LocalDate getDatePurchased() {
@@ -60,5 +70,9 @@ public class Item {
 	
 	public void setName(String name) {
 		this.purchaser = name;
+	}
+	
+	public void setNumber(int num) {
+		this.entryNumber = num;
 	}
 }

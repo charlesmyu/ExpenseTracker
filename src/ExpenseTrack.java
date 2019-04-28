@@ -93,8 +93,6 @@ public class ExpenseTrack {
 		
 		
 		//operation-----
-		//use boolean and while loop to determine if user has saved or ended program
-		boolean askFunction = true;
 		
 		//CODE NOTES FOR WHILE LOOP:
 		//while loop (end on command "end", "compile", or "save")
@@ -106,7 +104,9 @@ public class ExpenseTrack {
 			//for every function performed, when function complete, save into temp file using save method (remember to retrieve number of lines in file)
 			//then program will loop back to beginning of while loop and re-initialize temp file
 		
-		while(askFunction) { 
+		//use # of lines to determine whether to end loop or not (where lines = 0 indicates end desired)
+		//# of lines used bc this value can change with add/delete functions, and must be able to change accordingly as a result
+		while(lines != 0) { 
 			
 			//----
 			int entries = lines-1; //number of entries in the file is # of lines less the header
@@ -118,7 +118,7 @@ public class ExpenseTrack {
 			
 			//find function and execute using item array, then save result to temp file
 			//modifies askFunction boolean if necessary to stop program
-			askFunction = executeFunction(item, askFunction, console);
+			lines = executeFunction(item, lines, console);
 		} //if while loop continues, re-initialize temp file into item array (replace old array with new info)
 		//-----
 
@@ -129,18 +129,21 @@ public class ExpenseTrack {
 	
 	
 	//find and execute requested function to be performed on array
-	public static boolean executeFunction(Item[] item, boolean askFunction, Scanner console) throws IOException {
+	public static int executeFunction(Item[] item, int lines, Scanner console) throws IOException {
 		
 		//ask user for function to execute
 		System.out.print("What function would you like to execute? You can add, delete, change, save, compile, end, or ask for help: ");
 		String request = console.next();
 		request = request.toLowerCase();
 		System.out.println();
+		System.out.println("--------------------");
+		System.out.println();
 		
-		if(request.equals("end")) { //if end requested, change askFunction to false to end program
-			askFunction = false;
+		if(request.equalsIgnoreCase("end")) { //if end requested, change lines to 0 to end program
+			System.out.println("Program ended.");
+			lines = 0;
 			
-		} else if(request.equals("save")) {
+		} else if(request.equalsIgnoreCase("save")) {
 			System.out.print("Enter output file name (must be a single string): ");
 			String outputFileName = console.next();
 			
@@ -148,14 +151,10 @@ public class ExpenseTrack {
 			saveArray(item, outputFileName);
 
 			//end program, as save indicates end of usage
-			System.out.println("Expense list saved to " + outputFileName);
-			askFunction = false;
+			System.out.println("\nExpense list saved to " + outputFileName + ".");
+			lines = 0;
 		
-		} else if(request.equals("change")) { 
-			//TODO when each function completed, perform save into temp file using save method
-			//refer to function descriptions at top
-			
-			
+		} else if(request.equalsIgnoreCase("change")) { 		
 			//TODO change method
 				//input: item
 				//output: item2 (new item array)
@@ -165,7 +164,7 @@ public class ExpenseTrack {
 				//arrange to be able to change multiple entries at a time (use while loop and end on "done" or smth)
 			
 			//saveArray(item2, "tempFile");
-		} else if(request.equals("delete")) {
+		} else if(request.equalsIgnoreCase("delete")) {
 			//TODO delete method
 				//input: item
 				//output: item2 (new item array)
@@ -174,68 +173,27 @@ public class ExpenseTrack {
 				//arrange to be able to change multiple entries at a time (use while loop and end on "done" or smth)
 			
 			//saveArray(item2, "tempFile");
-		} else if(request.equals("add")) {
-			//TODO add method
-				//input: item
-			 	//output: item2 (new item array)
+		} else if(request.equalsIgnoreCase("add")) {
+			//call method to add entries, and assign to new array that will be re-saved
+			Item[] newItem = addEntries(item, console);
 			
-			//in method:
-				//ask for number of entries to be added
-				//prompt user for entries, and use to create add array containing ONLY new entries
-					//for date entered, use LocalDate.now()
-				//using this add array, confirm with user they wish to add (print out array to console to confirm)
-					//if they do not wish to add, return original array (do not modify)
-				//if they wish to add, append add array onto original array and return that (copyOf method)
+			System.out.println("\nEntries appended.");
+			lines = saveArray(newItem, "tempFile"); //new # of lines counted by the saveArray method, so use that
 			
-			//back in main method (here), save new array to temp file (written below)
-				//saveArray(item2, "tempFile");
-		} else if(request.equals("help")) {
-			//print help document to console
+		} else if(request.equalsIgnoreCase("help")) {
 			
-			/* Help document
-			This program is designed to track expenses of a group of people, and determine how to even out those costs (i.e. how to pay one another back).
-			It is designed such that multiple people can purchase items.
+			//print README doc to console
+			Scanner readMe = new Scanner(new File("README"));
 			
-			Expense lists are saved in text files when the program is not in operation, consisting of various "entries" that each represent an expense.
+			while(readMe.hasNextLine()) {
+				System.out.println(readMe.nextLine());
+			}
 			
-			Upon startup, the program will prompt you to either create a new file or pull up an existing file. 
-			Given an existing file, the program will import the file's entries and utilize those as its current entries.
-			When asked to create a new file, the program will begin a new file with no entries.
+			readMe.close();
 			
-			The program will then prompt for various functions:
-	
-			Save:
-				This function saves the existing entries into a text file, and then ends the program.
-				You will be prompted for a file name that will be used to save the file.
-				Any existing file with the same file name will be overwritten.
-				This type of file (save file) can be used at the start of the program to import entries. 
-			
-			Compile:
-				This function will save two files: a save file, and a unique "compile file".
-				The compile file will contain the statement of all expenses, balances owing and owed for each purchaser, as well as amounts and transfer paths to even costs (i.e. Person A pays person B $x).
-				You will be prompted for two file names: one for the save file, and one for the compile file.
-				
-				Notes:
-					The compile file cannot be used as an import file at the beginning of the program.
-					If there is an individual who you wish to split costs with, but has not purchased anything, you must enter them in the expense list at least once with a purchase amount of $0.
-						This is because the program will only divide expenses amongst those who have been entered into the list
-			
-			Add:
-			
-			
-			Change:
-			
-			
-			Delete:
-			
-			
-			Help:
-				This.
-				
-				
-			Please note that if any file name is not specified with a specific path name, it will be saved to the program's ExpensesTracker folder.
-			 */
-		} else if(request.equals("compile")) {
+			lines = saveArray(item, "tempFile");
+
+		} else if(request.equalsIgnoreCase("compile")) {
 			//save normal file before compiling file (just for documentation's sake)
 			System.out.print("Enter save list file name (must be a single string, add .txt): ");
 			String outputFileName1 = console.next();
@@ -250,14 +208,74 @@ public class ExpenseTrack {
 			compile(item, outputFileName2, console);
 			
 			//end program as compile indicates end of use
-			System.out.println("\nExpense list compiled to " + outputFileName2);
-			askFunction = false;
+			System.out.println("\nExpense list compiled to " + outputFileName2 + ", and entries saved to " + outputFileName1 + ".");
+			lines = 0;
 			
 		} else {
 			System.out.println("That request is invalid. Please try again.");
 		}
 		
-		return askFunction;
+		System.out.println();
+		System.out.println("--------------------");
+		
+		return lines;
+	}
+	
+	
+	//method adds multiple entries to current list at discretion of the user
+	public static Item[] addEntries(Item[] items, Scanner console) {
+		
+		//Prompt for number of entries desired
+		System.out.print("Number of entries to be added: ");
+		int numEntries = console.nextInt();
+		
+		//create new items array and copy old items over
+		Item[] newItems = new Item[items.length + numEntries];
+		
+		for(int i=0; i<items.length; i++) {
+			newItems[i] = items[i];
+		}
+		
+		System.out.println();
+		
+		//prompt user to input info and add new entries through use of Item constructor
+		for(int i=items.length; i<numEntries+items.length; i++) {
+			System.out.println("New Entry #" + (i-items.length+1));
+			
+			System.out.print("Enter purchase date in format YYYY-MM-DD: ");
+			String date = console.next();
+			
+			System.out.print("Enter description (no spaces): ");
+			String desc = console.next(); 
+			
+			System.out.print("Enter amount spent: $");
+			double amt = console.nextDouble();
+			
+			System.out.print("Enter purchaser name: ");
+			String name = console.next();
+			
+			System.out.println();
+			
+			newItems[i] = new Item(i-items.length+1, date, desc, amt, name);
+		}
+		
+		//print out new entries to confirm entry
+		Item.printHeader(System.out);
+		for(int i=items.length; i<numEntries+items.length; i++) {
+			System.out.println(newItems[i].toString());
+		}
+		
+		//confirm entries are desired
+		System.out.println();
+		System.out.print("Would you like to append the above entry/entries? ");
+		String ans = console.next();
+		
+		//if entries are desired, return new array with appended entries. Otherwise, return old array
+		if(ans.toUpperCase().startsWith("Y")) {
+			return newItems;
+		} else {
+			return items;
+		}
 	}
 	
 	
@@ -392,7 +410,7 @@ public class ExpenseTrack {
 		}
 		return true;
 	}
-	
+
 	
 	//saves array to desired output file location, return number of lines printed in file
 	public static int saveArray(Item[] item, String outputFileName) throws IOException {
@@ -415,7 +433,8 @@ public class ExpenseTrack {
 		//for every element in array, print it out and increase line count
 		int lines = 1;
 		for(int i=0; i<item.length; i++) {
-			output.println(item[i]);
+			item[i].setNumber(lines);
+			output.println(item[i].toString());
 			lines++;
 		}
 		
@@ -459,8 +478,7 @@ public class ExpenseTrack {
 			String line = tempFileScanner.nextLine();
 			System.out.println(line); //print out entries to console
 			
-			item[i] = new Item(); //initialize new item for i'th array element (avoid null pointer exception)
-			item[i].fromString(line); //put string info into item object
+			item[i] = new Item(line); //initialize new item for i'th array element (avoid null pointer exception) using fromString constructor
 		}
 		tempFileScanner.close();
 		System.out.println();

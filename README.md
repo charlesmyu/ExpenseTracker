@@ -28,14 +28,22 @@ Compile Notes:
 	The compile file cannot be used as an import file at the beginning of the program.
 	If there is an individual who you wish to split costs with, but has not purchased anything, you must enter them in the expense 		list at least once with a purchase amount of $0. This is because the program will only divide expenses amongst those who have 		been entered into the list
 			
+			
 Add:
-	Adds items to the current entries list.
+	Adds items to the current entries list. It will prompt you for the various entry properties.
+	
+	Purchase Date: Must be entered in format YYYY-MM-DD
+	Description: Must not contain any spaces
+	Amount Spent: Enter decimal number only
+	Purchaser: Must not contain any spaces
 			
 Change:
-	In progress
+	Program will prompt you for the desired entry you wish to modify (target entry #) and then ask you which field you would like to 
+	modify. Any info modified must follow the same rules as outlined in the add function. You can modify multiple times following 
+	one change command, as the program will ask whether you wish to continue modifying or not.
 			
 Delete:
-  	In progress
+  	Program will prompt for the desired entry to delete (target entry #) and then confirm you wish to delete it. 
 			
 				
 Please note that if any file name is not specified with a specific path name, it will be saved to the program's ExpensesTracker folder.

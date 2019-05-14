@@ -155,24 +155,31 @@ public class ExpenseTrack {
 			lines = 0;
 		
 		} else if(request.equalsIgnoreCase("change")) { 		
-			//TODO change method
-				//input: item
-				//output: item2 (new item array)
+			//retrieve # of entry to change and call change method
+			boolean wantChange = true;
 			
-				//request and search for item to change
-				//alter entry requested for
-				//arrange to be able to change multiple entries at a time (use while loop and end on "done" or smth)
+			while(wantChange) {
+				//activate change procedure
+				changeEntry(findNumber(console), item, console);
+				
+				//ask user if another change is wanted. if no, break loop
+				System.out.println();
+				System.out.print("Would you like to make another change? (Yes/No): ");
+				String change = console.next();
+				if(change.toUpperCase().startsWith("N")) {
+					wantChange = false;
+				} else {
+					System.out.println();
+				}
+			}
 			
-			//saveArray(item2, "tempFile");
+			lines = saveArray(item, "tempFile");
+			
 		} else if(request.equalsIgnoreCase("delete")) {
-			//TODO delete method
-				//input: item
-				//output: item2 (new item array)
-				//make search method to search array
-					//search method must be able to search through any of the item elements
-				//arrange to be able to change multiple entries at a time (use while loop and end on "done" or smth)
+			//delete item and save to new array
+			Item[] newItem = deleteEntry(findNumber(console), item, console);
+			lines = saveArray(newItem, "tempFile");
 			
-			//saveArray(item2, "tempFile");
 		} else if(request.equalsIgnoreCase("add")) {
 			//call method to add entries, and assign to new array that will be re-saved
 			Item[] newItem = addEntries(item, console);
@@ -219,6 +226,48 @@ public class ExpenseTrack {
 		System.out.println("--------------------");
 		
 		return lines;
+	}
+	
+	
+	//finds number of entry desired by user
+	public static int findNumber(Scanner console) {
+		System.out.print("Enter the target entry number: ");
+		int change = console.nextInt();
+		System.out.println();
+		return change;
+	}
+	
+	
+	//deletes entry with specified entry number given
+	public static Item[] deleteEntry(int entry, Item[] item, Scanner console) {
+		//checks whether user wants to delete entry or not
+		System.out.print("Are you sure you would like to delete entry " + entry + "? ");
+		String ans = console.next();
+		
+		//if user does, create new array with length one less and copy all applicable elements over
+		if(ans.toLowerCase().startsWith("y")) {
+			Item[] newItem = new Item[item.length - 1];
+			
+			for(int i=0; i<entry - 1; i++) {
+				newItem[i] = item[i];
+			}
+			
+			for(int i=entry; i<item.length; i++) {
+				newItem[i-1] = item[i];
+			}
+			
+			System.out.println("\nEntry Deleted.");
+			
+			return newItem;
+		} else { //otherwise return original array
+			return item;
+		}
+	}
+	
+	
+	//changes entry with specified entry number given
+	public static void changeEntry(int entry, Item[] item, Scanner console) {
+		item[entry - 1].change(console);
 	}
 	
 	

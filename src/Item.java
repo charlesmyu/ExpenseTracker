@@ -42,10 +42,46 @@ public class Item {
 		lineScanner.close();
 	}
 	
-	
 	public static void printHeader(PrintStream output) {
 		output.println("Entry #\t\tDate Entered\t\tDate Purchased\t\tDescription\t\t\tAmount\t\t\tPurchaser");
 		//TODO fix print spacings
+	}
+	
+	//asks for a field to be altered from console and alters selected field
+	public void change(Scanner console) {
+		boolean entryChanged = true;
+		
+		//ask which field to change
+		System.out.print("Which field would you like to alter?"
+				+ "\n\n1. Description"
+				+ "\n2. Amount"
+				+ "\n3. Purchaser"
+				+ "\n\nEnter the corresponding number: ");
+		
+		int changeField = console.nextInt();
+		
+		System.out.println();
+		
+		//user to then enter modified data, and respective field to be changed
+		System.out.print("Enter the modified field: ");
+		
+		if(changeField == 1) {
+			this.description = console.next();
+		} else if(changeField == 2) {
+			this.amount = console.nextDouble();
+		} else if(changeField == 3) {
+			this.purchaser = console.next();
+		} else {
+			System.out.println("\nThat is an invalid entry, please try again.");
+			entryChanged = false;
+		}
+		
+		System.out.println();
+		
+		if(entryChanged) {
+			System.out.println("Entry changed.");
+			System.out.println();
+		}
 	}
 	
 	public String toString() {
